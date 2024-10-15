@@ -1,10 +1,18 @@
 package edu.pe.cibertec.controller;
 
+
+import java.io.FileNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import edu.pe.cibertec.model.Usuario;
 import edu.pe.cibertec.service.IUsuarioService;
+import net.sf.jasperreports.engine.JRException;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,4 +59,11 @@ public class UsuarioController {
 		return "redirect:/listarUsuarios";
 	}
 	
+	@GetMapping("/export-pdf")
+	public ResponseEntity<byte[]> exportPdf() throws JRException, FileNotFoundException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_PDF);
+		headers.setContentDispositionFormData("usersReport", "userReport.pdf");
+	return ResponseEntity.ok().headers(headers).body(servicio.exportPdf());
+	}
 }
